@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <span>
+#include <ctime>
 using namespace std;
 
 int random(int a, int b)
@@ -87,10 +88,10 @@ vector<int> maxSumSegmentBasic(vector<int> a)
 
 class SumSegment
 {
-    public: int Sum = 0;
-    public: int FirstIndex = 0;
-    public: int LastIndex = 0;
-    public: vector<int> Segment;
+    int Sum;              public: int sum() {return Sum;}
+    int FirstIndex;       public: int firstIndex() {return FirstIndex;}
+    int LastIndex;        public: int lastIndex() {return LastIndex;}
+    vector<int> Segment;  public: vector<int> segment() {return Segment;}
 
     public: SumSegment(int sum, int firstIndex, int lastIndex, vector<int> segment)
     {
@@ -125,7 +126,9 @@ SumSegment maxSumSegment(vector<int> a)
         }
     }
 
-    if (maxSomma > 0) return SumSegment(maxSomma, firstIndex, lastIndex, vector<int>(a.begin() + firstIndex, a.begin() + lastIndex + 1));
+    //if (maxSomma > 0) return SumSegment(maxSomma, firstIndex, lastIndex, span(a).subspan(firstIndex, lastIndex));
+    if (maxSomma > 0) 
+    return SumSegment(maxSomma, firstIndex, lastIndex, vector<int>(a.begin() + firstIndex, a.begin() + lastIndex + 1));
     else 
     {
         int maxNeg = a[0];
@@ -142,13 +145,16 @@ SumSegment maxSumSegment(vector<int> a)
 
 int main()
 {
-    vector<int> a = {10, 15, -4, -20, 52, 43, -8, 100, -127, 5, 69};
-    vector<int> b = {-5, -3, -27, 0, -4, -1};
+    srand(time(NULL));
+    /*vector<int> a = {10, 15, -4, -20, 52, 43, -8, 100, -127, 5, 69};
+    vector<int> b = {-5, -3, -27, 0, -4, -1};*/
+    vector<int> a = generaArrayCasuale(15);
+    printVector(a); cout << endl;
 
     //vector<int> result = maxSumSegmentBasic(a);
     //cout << "somma:  " << result[0] << endl << "range:  " << result[1] << " - " << result[2] << endl;
     SumSegment result = maxSumSegment(a);
-    cout << "somma:  " << result.Sum << endl << "range:  " << result.FirstIndex << " - " << result.LastIndex << endl << "array:  ";
-    printVector(result.Segment); cout << endl;
+    cout << "somma:  " << result.sum() << endl << "range:  " << result.firstIndex() << " - " << result.lastIndex() << endl << "array:  ";
+    printVector(result.segment()); cout << endl;
     return 0;
 }
