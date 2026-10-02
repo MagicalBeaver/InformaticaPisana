@@ -1,6 +1,28 @@
 #include <iostream>
 #include <vector>
+#include <span>
 using namespace std;
+
+int random(int a, int b)
+{
+    //estremi inclusi:
+    return rand()%(b-a+1) + a;
+}
+
+vector<int> generaArrayCasuale(int n, int minVal = -100, int maxVal = 100)
+{
+    //v.push_back(value) aggiunge value al del vettore
+    vector<int> v(n);
+    for (int i = 0; i < n; i++)
+    v[i] = random(minVal, maxVal);
+    return v;
+}
+
+void printVector(vector<int> a)
+{
+    for (auto e : a)
+    cout << e << " ";
+}
 
 int maxSum(vector<int> a)
 {
@@ -63,14 +85,14 @@ vector<int> maxSumSegmentBasic(vector<int> a)
     }
 }
 
-/*class SumSegment
+class SumSegment
 {
-    int Sum = 0;
-    int FirstIndex = 0;
-    int LastIndex = 0;
-    vector<int> Segment;
+    public: int Sum = 0;
+    public: int FirstIndex = 0;
+    public: int LastIndex = 0;
+    public: vector<int> Segment;
 
-    SumSegment(int sum, int firstIndex, int lastIndex, int segment)
+    public: SumSegment(int sum, int firstIndex, int lastIndex, vector<int> segment)
     {
         Sum = sum;
         FirstIndex = firstIndex;
@@ -80,7 +102,7 @@ vector<int> maxSumSegmentBasic(vector<int> a)
 }
 ;
 
-vector<int> maxSumSegment(vector<int> a)
+SumSegment maxSumSegment(vector<int> a)
 {
     int somma = 0;
     int maxSomma = 0;
@@ -103,7 +125,7 @@ vector<int> maxSumSegment(vector<int> a)
         }
     }
 
-    if (maxSomma > 0) return new SumSegment(maxSomma, firstIndex, lastIndex, );
+    if (maxSomma > 0) return SumSegment(maxSomma, firstIndex, lastIndex, vector<int>(a.begin() + firstIndex, a.begin() + lastIndex + 1));
     else 
     {
         int maxNeg = a[0];
@@ -114,16 +136,19 @@ vector<int> maxSumSegment(vector<int> a)
             maxNeg = a[i];
             index = i;
         }
-        return new SumSegment(maxNeg, index, index, {maxNeg});
+        return SumSegment(maxNeg, index, index, {maxNeg});
     }
-}*/
+}
 
 int main()
 {
-    vector<int> a = {10, 15, -4, -20, 52, 43, -8, 100, -127, 5, 69, -400, 200};
+    vector<int> a = {10, 15, -4, -20, 52, 43, -8, 100, -127, 5, 69};
     vector<int> b = {-5, -3, -27, 0, -4, -1};
 
-    vector<int> result = maxSumSegmentBasic(b);
-    cout << "somma:  " << result[0] << endl << "range:  " << result[1] << " - " << result[2] << endl;
+    //vector<int> result = maxSumSegmentBasic(a);
+    //cout << "somma:  " << result[0] << endl << "range:  " << result[1] << " - " << result[2] << endl;
+    SumSegment result = maxSumSegment(a);
+    cout << "somma:  " << result.Sum << endl << "range:  " << result.FirstIndex << " - " << result.LastIndex << endl << "array:  ";
+    printVector(result.Segment); cout << endl;
     return 0;
 }
