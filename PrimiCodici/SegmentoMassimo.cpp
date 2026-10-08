@@ -56,7 +56,7 @@ int maxSum(const vector<int>& a)
     }
 }
 
-vector<int> maxSumSegmentBasic(const vector<int>& a)
+int* maxSumSegmentBasic(const vector<int>& a)
 {
     int somma = 0;
     int maxSomma = 0;
@@ -79,7 +79,11 @@ vector<int> maxSumSegmentBasic(const vector<int>& a)
         }
     }
 
-    if (maxSomma > 0) return {maxSomma, firstIndex, lastIndex};
+    if (maxSomma > 0) 
+    {
+        static int arr[3] = {maxSomma, firstIndex, lastIndex};
+        return arr;
+    }
     else 
     {
         int maxNeg = a[0];
@@ -90,7 +94,8 @@ vector<int> maxSumSegmentBasic(const vector<int>& a)
             maxNeg = a[i];
             index = i;
         }
-        return {maxNeg, index, index};
+        static int arr[3] = {maxNeg, index, index};
+        return arr;
     }
 }
 
@@ -153,7 +158,7 @@ SumSegment maxSumSegment(const vector<int>& a)
 
 int main()
 {
-    constexpr int n = 15;
+    constexpr int n = 100;
     vector<int> a = generaArrayCasuale(n);
     printVector(a); cout << endl;
 
@@ -190,7 +195,20 @@ int main()
         auto stop = high_resolution_clock::now();
         auto durata = duration_cast<microseconds>(stop - start);
 
-        cout << tipo << endl << "somma:  " << risultato << endl << "durata: " << durata.count() << " ms";
+        cout << tipo << endl << "somma:  " << risultato << endl << "durata: " << durata.count() << " ms" << endl;
     }
 
+    auto start = high_resolution_clock::now();
+    int* risultato = maxSumSegmentBasic(a);
+    auto stop = high_resolution_clock::now();
+    auto durata = duration_cast<microseconds>(stop - start);
+    cout << tipologia[1] << endl << "somma:  " << risultato[0] << endl << "range:  " << risultato[1] << " - " << risultato[2] << endl << "durata: " << durata.count() << " ms" << endl;
+    
+    start = high_resolution_clock::now();
+    SumSegment result = maxSumSegment(a);
+    stop = high_resolution_clock::now();
+    durata = duration_cast<microseconds>(stop - start);
+    cout << tipologia[2] << endl << "somma:  " << result.sum() << endl << "range:  " << result.firstIndex() << " - " << result.lastIndex() << endl << "array:  ";
+    printVector(result.segment()); 
+    cout << endl << "durata: " << durata.count() << " ms" << endl;
 }
