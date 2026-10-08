@@ -190,7 +190,7 @@ int main()
         auto stop = high_resolution_clock::now();
         auto durata = duration_cast<microseconds>(stop - start);
 
-        cout << tipo << endl << "somma:  " << risultato << endl << "durata: " << durata.count();
+        cout << tipo << endl << "somma:  " << risultato << endl << "durata: " << durata.count() << " ms";
     }
 
 }
