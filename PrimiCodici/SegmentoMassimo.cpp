@@ -2,12 +2,20 @@
 #include <vector>
 #include <span>
 #include <ctime>
+#include <random>
+#include <chrono>
 using namespace std;
+using namespace std::chrono;
 
 int random(int a, int b)
 {
+    static random_device rd;
+    static mt19937 gen(rd());
+    uniform_int_distribution<int> dist(a,b);
+    return dist(gen);
+
     //estremi inclusi:
-    return rand()%(b-a+1) + a;
+    //return rand()%(b-a+1) + a;
 }
 
 vector<int> generaArrayCasuale(int n, int minVal = -100, int maxVal = 100)
@@ -19,13 +27,13 @@ vector<int> generaArrayCasuale(int n, int minVal = -100, int maxVal = 100)
     return v;
 }
 
-void printVector(vector<int> a)
+void printVector(const vector<int>& a)
 {
     for (auto e : a)
     cout << e << " ";
 }
 
-int maxSum(vector<int> a)
+int maxSum(const vector<int>& a)
 {
     int somma = 0;
     int maxSomma = 0;
@@ -48,7 +56,7 @@ int maxSum(vector<int> a)
     }
 }
 
-vector<int> maxSumSegmentBasic(vector<int> a)
+vector<int> maxSumSegmentBasic(const vector<int>& a)
 {
     int somma = 0;
     int maxSomma = 0;
@@ -103,7 +111,7 @@ class SumSegment
 }
 ;
 
-SumSegment maxSumSegment(vector<int> a)
+SumSegment maxSumSegment(const vector<int>& a)
 {
     int somma = 0;
     int maxSomma = 0;
@@ -145,16 +153,44 @@ SumSegment maxSumSegment(vector<int> a)
 
 int main()
 {
-    srand(time(NULL));
-    /*vector<int> a = {10, 15, -4, -20, 52, 43, -8, 100, -127, 5, 69};
-    vector<int> b = {-5, -3, -27, 0, -4, -1};*/
-    vector<int> a = generaArrayCasuale(15);
+    constexpr int n = 15;
+    vector<int> a = generaArrayCasuale(n);
     printVector(a); cout << endl;
+
 
     //vector<int> result = maxSumSegmentBasic(a);
     //cout << "somma:  " << result[0] << endl << "range:  " << result[1] << " - " << result[2] << endl;
-    SumSegment result = maxSumSegment(a);
+    /*SumSegment result = maxSumSegment(a);
     cout << "somma:  " << result.sum() << endl << "range:  " << result.firstIndex() << " - " << result.lastIndex() << endl << "array:  ";
     printVector(result.segment()); cout << endl;
-    return 0;
+    return 0;*/
+
+    //loop tra funzioni:
+    using FuncPtr = int (*)(const vector<int>&);
+    FuncPtr funzioni[] = 
+    {
+        maxSum
+    };
+    string tipologia[] = 
+    {
+        "Just Sum: ",
+        "All But Basic: ",
+        "Everything In Class: "
+    };
+
+    for (int i = 0; i < sizeof(funzioni)/sizeof(funzioni[0]); i++)
+    {
+        FuncPtr f = funzioni[i];
+        string tipo = tipologia[i];
+
+        auto start = high_resolution_clock::now();
+
+        int risultato = f(a);
+
+        auto stop = high_resolution_clock::now();
+        auto durata = duration_cast<microseconds>(stop - start);
+
+        cout << tipo << endl << "somma:  " << risultato << endl << "durata: " << durata.count();
+    }
+
 }
