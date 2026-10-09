@@ -33,6 +33,12 @@ void printVector(const vector<int>& a)
     cout << e << " ";
 }
 
+/*void printVector(const vector<int>* a)
+{
+    for (auto e : a[0])
+    cout << e << " ";
+}*/
+
 int maxSum(const vector<int>& a)
 {
     int somma = 0;
@@ -104,9 +110,9 @@ class SumSegment
     int Sum;              public: int sum() {return Sum;}
     int FirstIndex;       public: int firstIndex() {return FirstIndex;}
     int LastIndex;        public: int lastIndex() {return LastIndex;}
-    vector<int> Segment;  public: vector<int> segment() {return Segment;}
+    vector<int>* Segment;  public: vector<int>* segment() {return Segment;}
 
-    public: SumSegment(int sum, int firstIndex, int lastIndex, vector<int> segment)
+    public: SumSegment(int sum, int firstIndex, int lastIndex, vector<int>* segment)
     {
         Sum = sum;
         FirstIndex = firstIndex;
@@ -141,7 +147,7 @@ SumSegment maxSumSegment(const vector<int>& a)
 
     //if (maxSomma > 0) return SumSegment(maxSomma, firstIndex, lastIndex, span(a).subspan(firstIndex, lastIndex));
     if (maxSomma > 0) 
-    return SumSegment(maxSomma, firstIndex, lastIndex, vector<int>(a.begin() + firstIndex, a.begin() + lastIndex + 1));
+    return SumSegment(maxSomma, firstIndex, lastIndex, &vector<int>(a.begin() + firstIndex, a.begin() + lastIndex + 1));
     else 
     {
         int maxNeg = a[0];
@@ -152,7 +158,7 @@ SumSegment maxSumSegment(const vector<int>& a)
             maxNeg = a[i];
             index = i;
         }
-        return SumSegment(maxNeg, index, index, {maxNeg});
+        return SumSegment(maxNeg, index, index, new vector<int>{maxNeg});
     }
 }
 
@@ -172,11 +178,11 @@ int main()
 
     //loop tra funzioni:
     using FuncPtr = int (*)(const vector<int>&);
-    FuncPtr funzioni[] = 
+    const FuncPtr funzioni[] = 
     {
         maxSum
     };
-    string tipologia[] = 
+    const string tipologia[] = 
     {
         "Just Sum: ",
         "All But Basic: ",
@@ -185,12 +191,12 @@ int main()
 
     for (int i = 0; i < sizeof(funzioni)/sizeof(funzioni[0]); i++)
     {
-        FuncPtr f = funzioni[i];
-        string tipo = tipologia[i];
+        const FuncPtr f = funzioni[i];
+        const string& tipo = tipologia[i];
 
         auto start = high_resolution_clock::now();
 
-        int risultato = f(a);
+        const int risultato = f(a);
 
         auto stop = high_resolution_clock::now();
         auto durata = duration_cast<microseconds>(stop - start);
@@ -199,7 +205,7 @@ int main()
     }
 
     auto start = high_resolution_clock::now();
-    int* risultato = maxSumSegmentBasic(a);
+    const int* risultato = maxSumSegmentBasic(a);
     auto stop = high_resolution_clock::now();
     auto durata = duration_cast<microseconds>(stop - start);
     cout << tipologia[1] << endl << "somma:  " << risultato[0] << endl << "range:  " << risultato[1] << " - " << risultato[2] << endl << "durata: " << durata.count() << " ms" << endl;
@@ -209,6 +215,6 @@ int main()
     stop = high_resolution_clock::now();
     durata = duration_cast<microseconds>(stop - start);
     cout << tipologia[2] << endl << "somma:  " << result.sum() << endl << "range:  " << result.firstIndex() << " - " << result.lastIndex() << endl << "array:  ";
-    printVector(result.segment()); 
+    printVector(*result.segment()); 
     cout << endl << "durata: " << durata.count() << " ms" << endl;
 }
