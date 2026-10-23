@@ -81,7 +81,7 @@ void quicksort(vector<int>& a, int start, int stop)
 {
     if (start < stop)
     {
-        int pivot = stop;
+        int pivot = random(start, stop);
         int rank = dist(a, start, pivot, stop);
         quicksort(a, start, rank-1);
         quicksort(a, rank+1, stop);
@@ -93,15 +93,8 @@ void quicksort(vector<int>& a)
     quicksort(a, 0, a.size()-1);
 }
 
-int main()
+void doStuff(vector<int>& a)
 {
-    constexpr long n = 8;
-    cout << fib(n) << endl;
-
-    constexpr int m = 1000;
-    vector<int> a = generaArrayCasuale(m);
-    printVector(a); cout << endl;
-
     auto start = high_resolution_clock::now();
 
     quicksort(a);
@@ -112,5 +105,17 @@ int main()
     cout << "sorted vector: " << endl;
     printVector(a);
     cout << endl << "durata: " << durata.count() << " us";
+}
 
+int main()
+{
+    constexpr long n = 8;
+    cout << fib(n) << endl;
+
+    constexpr int m = 1000;
+    vector<int> a = generaArrayCasuale(m);
+    printVector(a); cout << endl;
+
+    doStuff(a);
+    //doStuff(a);
 }
