@@ -47,6 +47,21 @@ long fib(long n)
     return k;
 }
 
+void InsertionSort(vector<int>& a)
+{
+    for (int i = 1; i < a.size(); i++)
+    {
+        int t = a[i];
+        int j = i;
+        while (j > 0 && a[j-1] > t)
+        {
+            a[j] = a[j-1];
+            j--;
+        }
+        a[j] = t;
+    }
+}
+
 int dist(vector<int>& a, int start, int pivot, int stop)
 {
     swap(a[pivot], a[stop]);
@@ -54,7 +69,7 @@ int dist(vector<int>& a, int start, int pivot, int stop)
 
     int i = start;
     int j = stop-1;
-    bool foundi = false;
+    /*bool foundi = false;
     bool foundj = false;
     while (i < j)
     {
@@ -70,6 +85,16 @@ int dist(vector<int>& a, int start, int pivot, int stop)
             foundi = false; foundj = false;
             i++; j--;
         }
+    }*/
+    while (i < j)
+    {
+        while (a[i] <= pivotValue && i < j) i++;
+        while (a[j] > pivotValue && i < j) j--;
+
+        if (i >= j) break;
+
+        swap(a[i], a[j]);
+        i++; j--;
     }
 
     int rank = a[i] > pivotValue ? i : i+1;
@@ -77,45 +102,61 @@ int dist(vector<int>& a, int start, int pivot, int stop)
     return rank;
 }
 
-void quicksort(vector<int>& a, int start, int stop)
+void quicksort(vector<int>& a, int start, int stop, int valueToStartDoingInsertionSort = 1)
 {
-    if (start < stop)
+    if (start < stop - (valueToStartDoingInsertionSort-1))
     {
         int pivot = random(start, stop);
         int rank = dist(a, start, pivot, stop);
-        quicksort(a, start, rank-1);
-        quicksort(a, rank+1, stop);
+        quicksort(a, start, rank-1, valueToStartDoingInsertionSort);
+        quicksort(a, rank+1, stop, valueToStartDoingInsertionSort);
     }
 }
 
-void quicksort(vector<int>& a)
+void quicksort(vector<int>& a, int valueToStartDoingInsertionSort = 1)
 {
+    if (valueToStartDoingInsertionSort <= 1)
     quicksort(a, 0, a.size()-1);
+    else 
+    {
+        quicksort(a, 0, a.size()-1, valueToStartDoingInsertionSort);
+        InsertionSort(a);
+    }
 }
 
-void doStuff(vector<int>& a)
+void doStuff(vector<int>& a, int L = 1)
 {
     auto start = high_resolution_clock::now();
 
-    quicksort(a);
+    quicksort(a, L);
 
     auto stop = high_resolution_clock::now();
     auto durata = duration_cast<microseconds>(stop - start);
 
     cout << "sorted vector: " << endl;
-    printVector(a);
-    cout << endl << "durata: " << durata.count() << " us";
+    printVector(a); cout << endl;
+    cout << "durata: " << durata.count() << " us" << endl;
 }
 
 int main()
 {
-    constexpr long n = 8;
-    cout << fib(n) << endl;
-
+    constexpr int Lmax = 1000;
     constexpr int m = 1000;
     vector<int> a = generaArrayCasuale(m);
-    printVector(a); cout << endl;
+    //printVector(a); cout << endl;
+    //vector<int> b = a;
 
-    doStuff(a);
-    //doStuff(a);
+    /*for (int i = 1; i <= Lmax; i++)
+    {
+        vector<int> b = a;
+        doStuff(b, i);
+    }*/
+
+    doStuff(a, 16);
+
+    /*doStuff(b, L);
+
+    for (int i = 0; i < m; i++)
+    b[i] -= a[i];
+    printVector(b); cout << endl;*/
 }
